@@ -8,12 +8,17 @@ import java.security.PublicKey;
 public class VertexComponent extends JButton {
     private boolean mouseOver = false;
     private boolean mousePressed = false;
+    private Point dragOffset = new Point();
 
+    public boolean displayed;
     public Integer VertexId;
 
     public VertexComponent(String text, Integer id){
         super(text);
+
         VertexId = id;
+        displayed = false;
+
         setOpaque(false);
         setFocusPainted(false);
         setBorderPainted(false);
@@ -24,6 +29,7 @@ public class VertexComponent extends JButton {
             public void mousePressed(MouseEvent me){
                 if(contains(me.getX(), me.getY())){
                     mousePressed = true;
+                    dragOffset = me.getPoint();
                     repaint();
                 }
             }
@@ -46,8 +52,17 @@ public class VertexComponent extends JButton {
                 mouseOver = contains(me.getX(), me.getY());
                 repaint();
             }
+            @Override
+            public void mouseDragged(MouseEvent me) {
+                if (mousePressed) {
+                    Point location = getLocation();
+                    int x = location.x + me.getX() - dragOffset.x;
+                    int y = location.y + me.getY() - dragOffset.y;
+                    setLocation(x, y);
+                    repaint();
+                }
+            }
         };
-
         addMouseListener(mouseListener);
         addMouseMotionListener(mouseListener);
     }
@@ -98,5 +113,10 @@ public class VertexComponent extends JButton {
         int stringWidth = metrics.stringWidth(getText());
         int stringHeight = metrics.getHeight();
         g.drawString(getText(), getWidth()/2 - stringWidth/2, getHeight()/2 + stringHeight/4);
+    }
+
+    @Override
+    public String toString() {
+        return  getText();
     }
 }

@@ -1,17 +1,21 @@
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class GraphManager implements DisplayListener {
     private Graph graph;
-
+    private GraphListener graphListener;
     public GraphManager()
     {
         graph = new Graph();
-        graph.AddVertex("munio");
-        graph.AddVertex("munio2");
-        graph.AddVertex("munio2");
-        graph.AddVertex("munio2");
-        graph.AddVertex("munio2");
-        graph.AddVertex("munio2");
+    }
+
+    public GraphManager(Graph g) throws IOException {
+        graph = g;
+    }
+    @Override
+    public  void SaveGraph(String file) throws IOException {
+        Graph.SaveGraphToFile(graph, file);
     }
     @Override
     public void DeleteEdge(Integer from, Integer to) {
@@ -25,12 +29,20 @@ public class GraphManager implements DisplayListener {
 
     @Override
     public void AddVertex(String content) {
-        graph.AddVertex(content);
+
+        graph.AddVertex(content, graph.maxId);
+        graphListener.DrawGraph();
     }
 
     @Override
     public void AddEdge(Integer from, Integer to) {
+
         graph.AddEdge(from, to);
+        graphListener.DrawGraph();
+    }
+
+    public void setGraphListener(GraphListener graphListener) {
+        this.graphListener = graphListener;
     }
 
     public ArrayList<VertexComponent> GetVertices()
